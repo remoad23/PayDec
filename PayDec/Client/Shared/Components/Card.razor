@@ -30,11 +30,11 @@
     public EventCallback SecondaryButton { get; set; }
 
     [Parameter]
-    public string PrimaryButtonText { get; set; }
+    public string PrimaryButtonText { get; set; } = "";
 
     [Parameter]
-    public string SecondaryButtonText { get; set; }
+    public string SecondaryButtonText { get; set; } = "";
 
     [Parameter]
-    public RenderFragment ChildContent { get; set; }
+    public RenderFragment? ChildContent { get; set; } = null;
 }

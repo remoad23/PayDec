@@ -10,12 +10,12 @@ namespace PayDec.Shared.Model
     public class Admin
     {
         [Key]
-        public long Id { get; set; }
+        public long Id { get; set; } = 0;
         [Required]
-        public string Name { get; set; }
+        public string Name { get; set; } = "";
         [Required]
-        public string Password { get; set; }
+        public string Password { get; set; } = "";
         [Required]
-        public string Email { get; set; }
+        public string Email { get; set; } = "";
     }
 }

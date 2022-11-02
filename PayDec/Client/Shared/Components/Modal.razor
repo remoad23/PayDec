@@ -22,15 +22,15 @@
 
 @code {
     [Parameter]
-    public string Title { get; set; }
+    public string Title { get; set; } = "";
     [Parameter]
-    public RenderFragment ChildContent { get; set; }
+    public RenderFragment? ChildContent { get; set; } = null;
     [Parameter]
-    public EventCallback PrimaryButton { get; set; }
+    public EventCallback PrimaryButton { get; set; } = new();
     [Parameter]
-    public EventCallback SecondaryButton { get; set; }
+    public EventCallback SecondaryButton { get; set; } = new();
     [Parameter]
-    public string PrimaryButtonText { get; set; }
+    public string PrimaryButtonText { get; set; } = "";
     [Parameter]
-    public string SecondaryButtonText { get; set; }
+    public string SecondaryButtonText { get; set; } = "";
 }

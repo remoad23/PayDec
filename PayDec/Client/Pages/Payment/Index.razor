@@ -7,8 +7,7 @@
 <Table SelectedProperties="SelectedPaymentProperties" Data="Purchases"></Table>
 
 @code {
-
-    private List<object> Purchases { get; set; }
+    private List<object> Purchases { get; set; } = new List<object>();
     private List<string> SelectedPaymentProperties { get; set; } = new List<string>() { "BoughtItemId","BuyerAdress"};
 
     protected override async Task OnInitializedAsync()

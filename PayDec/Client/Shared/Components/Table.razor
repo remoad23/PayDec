@@ -23,9 +23,8 @@
 </table>
 
 @code {
-
     [Parameter]
-    public List<string> SelectedProperties { get; set; }
+    public List<string> SelectedProperties { get; set; } = new();
     [Parameter]
     public List<Object> Data { get; set; } = new();
 }
