@@ -1,0 +1,9 @@
+﻿CREATE TABLE [dbo].[Item] (
+    [Id] BIGINT IDENTITY  NOT NULL,
+    CONSTRAINT PK_ItemId PRIMARY KEY CLUSTERED (Id),
+    [Name] VARCHAR  (200) NOT NULL,
+    [Description] VARCHAR (300) NULL,
+    [Price] SMALLINT  NOT NULL,
+    [Stock] SMALLINT  NOT NULL
+);
+

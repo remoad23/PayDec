@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PayDec.Server", "PayDec\Server\PayDec.Server.csproj", "{5D941741-B247-4F3E-B077-C12AD3DBA351}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayDec.Server", "PayDec\Server\PayDec.Server.csproj", "{5D941741-B247-4F3E-B077-C12AD3DBA351}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PayDec.Client", "PayDec\Client\PayDec.Client.csproj", "{967CCB2F-A62B-4C23-861A-6EBCE08F6025}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayDec.Client", "PayDec\Client\PayDec.Client.csproj", "{967CCB2F-A62B-4C23-861A-6EBCE08F6025}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PayDec.Shared", "PayDec\Shared\PayDec.Shared.csproj", "{DFE8B216-B078-4578-B7C5-8ECDC13AB658}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PayDec.Shared", "PayDec\Shared\PayDec.Shared.csproj", "{DFE8B216-B078-4578-B7C5-8ECDC13AB658}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "PayDec.DB", "PayDec.DB\PayDec.DB.sqlproj", "{C9FB8443-E4C1-491D-A4EF-9E1E1025143B}"
 EndProject

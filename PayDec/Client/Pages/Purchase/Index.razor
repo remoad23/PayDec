@@ -1,0 +1,30 @@
+﻿@page "/Purchase/"
+
+@using PayDec.Client.Shared.Components
+@using PayDec.Shared.Model
+
+@foreach(var item in Items)
+{
+    <Card Title="@item.Name" Description="@item.Description" PrimaryButtonText="Buy" SecondaryButtonText="Details" PrimaryButton="BuyItem" SecondaryButton="ShowDetails"></Card>
+}
+
+if(ModalOpened)
+{
+    <Modal></Modal>
+}
+
+@code {
+    List<Item> Items { get; set; }
+
+    public bool ModalOpened { get; set; } = false;
+
+    private void BuyItem()
+    {
+        ModalOpened = true;
+    }
+
+    private void ShowDetails()
+    {
+        ModalOpened = true;
+    }
+}

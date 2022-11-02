@@ -1,0 +1,40 @@
+﻿<div class="card">
+  <img src="..." class="card-img-top" alt="...">
+
+  <div class="card-body">
+      if(ChildContent == null)
+      {
+        <h5 class="card-title">@Title</h5>
+        <p class="card-text">@Description</p>
+        <button @onclick="() => PrimaryButton.InvokeAsync()"></button>
+        <button @onclick="() => SecondaryButton.InvokeAsync()"></button>
+      }
+      else
+      {
+        @ChildContent
+      }
+  </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Title { get; set; } = "";
+
+    [Parameter]
+    public string Description { get; set; } = "";
+
+    [Parameter]
+    public EventCallback PrimaryButton { get; set; }
+
+    [Parameter]
+    public EventCallback SecondaryButton { get; set; }
+
+    [Parameter]
+    public string PrimaryButtonText { get; set; }
+
+    [Parameter]
+    public string SecondaryButtonText { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+}
