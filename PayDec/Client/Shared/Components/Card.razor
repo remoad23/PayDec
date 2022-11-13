@@ -1,28 +1,35 @@
-﻿<div class="card">
-  <img src="..." class="card-img-top" alt="...">
-
-  <div class="card-body">
-      if(ChildContent == null)
-      {
-        <h5 class="card-title">@Title</h5>
-        <p class="card-text">@Description</p>
-        <button @onclick="() => PrimaryButton.InvokeAsync()"></button>
-        <button @onclick="() => SecondaryButton.InvokeAsync()"></button>
-      }
-      else
-      {
-        @ChildContent
-      }
+﻿<div class="card" style="@CardCss">
+  <div class="card-body" style="padding: 0 !important">
+        <div style="height: 65%;width: 100%;">
+            <div style="height: 100%;width: 100%;background-size: cover;background-image: url('@ImagePath');background-repeat:no-repeat;"></div>
+@*                <img src="@ImagePath" style="height: 100%;width: 100%;">*@
+        </div>
+        <div style="display: flex;flex-direction: column;justify-content: space-evenly;align-items:center;width: 100%;height: 35%">
+                <h5 style="font-family: Roboto;" class="card-title">@Title</h5>
+            <div style="display:flex;flex-direction: row;width: 40%;justify-content: space-between;">
+                    <div @onclick="() => PrimaryButton.InvokeAsync()">@PrimaryButtonContent</div>
+                    <div @onclick="() => SecondaryButton.InvokeAsync()">@SecondaryButtonContent</div>
+                </div>
+        </div>
   </div>
 </div>
 
 @code {
-    [Parameter]
-    public string Title { get; set; } = "";
+        [Parameter]
+        public string Title { get; set; } = "";
 
-    [Parameter]
-    public string Description { get; set; } = "";
+        [Parameter]
+        public string Description { get; set; } = "";
 
+        [Parameter]
+        public string ImageName { get; set; } = "";
+
+    private string ImagePath { 
+        get{
+            return $"/asset/img/{ImageName}"; 
+        }
+    }
+        
     [Parameter]
     public EventCallback PrimaryButton { get; set; }
 
@@ -36,5 +43,11 @@
     public string SecondaryButtonText { get; set; } = "";
 
     [Parameter]
-    public RenderFragment? ChildContent { get; set; } = null;
+    public string CardCss { get; set; } = "";
+
+    [Parameter]
+    public RenderFragment? PrimaryButtonContent { get; set; } = null;
+
+    [Parameter]
+    public RenderFragment? SecondaryButtonContent { get; set; } = null;
 }

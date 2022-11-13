@@ -1,8 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using PayDec.Shared.Model.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
 namespace PayDec.Shared.Model
 {
-    public class Item
+    public class Item : IPDObject
+
     {
         [Key]
         public long Id { get; set; }
@@ -10,8 +12,10 @@ namespace PayDec.Shared.Model
         public string Name { get; set; } = "";
         public string? Description { get; set; }
         [Required]
-        public ushort Price {get;set;}
+        public short Price {get;set;}
         [Required]
-        public ushort Stock { get; set; }
+        public short Stock { get; set; }
+
+        public string ItemImage { get; set; } = "";
     }
 }

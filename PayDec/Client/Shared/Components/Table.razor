@@ -1,4 +1,5 @@
 ﻿@using PayDec.Shared
+@using PayDec.Shared.Model.Interfaces
 
 <table class="table table-hover">
     <thead>
@@ -15,7 +16,7 @@
             <tr>
                 @for(int x = 0; x < SelectedProperties.Count();x++)
                 {
-                    @*<th>@data.GetProperty(SelectedProperties[x]).GetValue(data,null)</th>*@
+                    <th>@data.GetType().GetProperty(SelectedProperties[x])?.GetValue(data,null)</th>
                 }
             </tr>
         }
@@ -26,5 +27,5 @@
     [Parameter]
     public List<string> SelectedProperties { get; set; } = new();
     [Parameter]
-    public List<Object> Data { get; set; } = new();
+    public List<IPDObject> Data { get; set; } = new();
 }

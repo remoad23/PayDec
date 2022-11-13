@@ -1,24 +1,31 @@
-﻿<div class="modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">@Title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>
-                    @ChildContent
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" @onclick="() => PrimaryButton.InvokeAsync()" class="btn btn-primary">Save changes</button>
-                <button type="button" @onclick="() => SecondaryButton.InvokeAsync()" class="btn btn-secondary" data-dismiss="modal">Close</button>
+﻿<div style="left: 0;top: 0;position: absolute;z-index: 100;height: 100vh; width: 100vw;background-color:rgba(0,0,0,0.5);display: flex; justify-content: center; align-items: center;">
+    <div class="modal" tabindex="-1" role="dialog" style="display:flex;align-items:center;">
+        <div class="modal-dialog" role="document" style="width: clamp(20vw,25vw,35vw);">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">@Title</h5>
+                    <button type="button" @onclick="() => CloseButton.InvokeAsync()" class="btn-close" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        @ChildContent
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    @if(PrimaryButtonText != "")
+                    {
+                        <button type="button" @onclick="() => PrimaryButton.InvokeAsync()" class="btn btn-primary">@PrimaryButtonText</button>
+                    }
+                    @if(SecondaryButtonText != "")
+                    {
+                        <button type="button" @onclick="() => SecondaryButton.InvokeAsync()" class="btn btn-secondary" data-dismiss="modal">@SecondaryButtonText</button>
+                    }
+                </div>
             </div>
         </div>
     </div>
 </div>
+
 
 @code {
     [Parameter]
@@ -29,6 +36,8 @@
     public EventCallback PrimaryButton { get; set; } = new();
     [Parameter]
     public EventCallback SecondaryButton { get; set; } = new();
+    [Parameter]
+    public EventCallback CloseButton { get; set; } = new();
     [Parameter]
     public string PrimaryButtonText { get; set; } = "";
     [Parameter]

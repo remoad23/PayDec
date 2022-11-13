@@ -1,7 +1,8 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif,Roboto;
+
 }
 
 h1:focus {
@@ -63,3 +64,12 @@ a, .btn-link {
         content: "An error has occurred."
     }
 
+
+.purchaseBtn{
+    transition-duration: 0.3s;
+}
+
+.purchaseBtn:hover {
+    background-color: grey !important;
+    cursor: pointer;
+}

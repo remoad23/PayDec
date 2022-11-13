@@ -1,0 +1,25 @@
+﻿@page "/Purchasesubmit/"
+
+@using PayDec.Client.Shared.Components
+@using PayDec.Shared.Model.Interfaces
+@using System.Text.Json;
+
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+
+
+<h3>Purchasesubmit</h3>
+
+<Table></Table>
+
+@code {
+    public List<string> Properties = new List<string>() { "Item", "Amount of Item", "Price" };
+
+    public List<IPDObject> BoughtItems { get; set; }
+
+    protected async Task OnInitailizedAsync()
+    {
+        string itemsAsJson = await localStorage.GetItemAsync<string>("ItemsToBuy");
+        var tuple = JsonSerializer.Deserialize<List<Tuple<IPDObject,int>>>(itemsAsJson);
+    }
+
+}

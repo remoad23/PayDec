@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[Purchase] (
-    [Id] BIGINT IDENTITY NOT NULL,
+    [Id] BIGINT IDENTITY(1,1) NOT NULL,
     CONSTRAINT PK_PurchaseId PRIMARY KEY CLUSTERED (Id),
     [BoughtItemId] BIGINT  NOT NULL,
     [BuyerAdress] VARCHAR(500),

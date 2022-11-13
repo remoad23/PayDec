@@ -2,17 +2,40 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Nethereum.Web3;
 using PayDec.Client;
+using PayDec.Client.Services.Repository.Interfaces;
+using PayDec.Client.Services.Repository;
+using Microsoft.Extensions.DependencyInjection;
+using Blazored.LocalStorage;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
+builder.Services.AddScoped(sp => new HttpClient { 
+    BaseAddress = new Uri(builder.Configuration.GetSection("ApiSettings:WebApiUrl").Value) 
+});
 
+builder.Services.AddScoped<IRepository, Repository>();
+
+builder.Services.AddBlazoredLocalStorage(config =>
+{
+    config.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+    config.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    config.JsonSerializerOptions.IgnoreReadOnlyProperties = true;
+    config.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+    config.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+    config.JsonSerializerOptions.ReadCommentHandling = JsonCommentHandling.Skip;
+    config.JsonSerializerOptions.WriteIndented = false;
+});
+
+
+//builder.Services.AddScoped<IRepository, Authenticator>();
 
 //await GetAccountBalance();
 //Console.ReadLine(); 
 
-
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+builder.Services.AddApiAuthorization();
 
 await builder.Build().RunAsync();
 

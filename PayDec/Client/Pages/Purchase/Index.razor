@@ -2,29 +2,127 @@
 
 @using PayDec.Client.Shared.Components
 @using PayDec.Shared.Model
+@using PayDec.Client.Services.Repository.Interfaces
+@using PayDec.Shared.Model.Interfaces
+@using PayDec.Client.Services.Repository
+@using System.Text.Json;
 
-@foreach(var item in Items)
+@inject IRepository Repo
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+
+
+<div class="purchaseCardWrapper d-flex" style="flex-direction:row;flex-wrap: wrap;">
+
+    @foreach (var item in Items)
+    {
+        if (item is Item)
+        {
+
+            string css = $@"
+    width: clamp(10vw,15vw,18vw);
+    height: 30vh;
+    margin:10px;
+    background-size: contain;
+    background-repeat: no-repeat;";
+
+            <Card Title="@((item as Item)?.Name)" PrimaryButton="() => BuyItem(item)" SecondaryButton="() => ShowDetails(item)" ImageName="@((item as Item)?.ItemImage)" CardCss="@css">
+                <PrimaryButtonContent>
+                    <div class="purchaseBtn" style="border-radius: 100%;background-color: #003049;height: 2.5em;width: 2.5em;display: flex;justify-content: center;align-items:center;">
+                        <i style="font-size:1.3em;color:white;" class="bi bi-bag-fill"></i>
+                    </div>
+                </PrimaryButtonContent>
+                <SecondaryButtonContent>
+                    <div class="purchaseBtn" style="border-radius: 100%;background-color: #003049;height: 2.5em;width: 2.5em;display: flex;justify-content: center;align-items:center;">
+                        <i style="font-size:2.0em;color:white;" class="bi bi-info"></i>
+                    </div>
+                </SecondaryButtonContent>
+            </Card>
+
+
+        }
+    }
+</div>
+
+@if (BuyModalOpened)
 {
-    <Card Title="@item.Name" Description="@item.Description" PrimaryButtonText="Buy" SecondaryButtonText="Details" PrimaryButton="BuyItem" SecondaryButton="ShowDetails"></Card>
+    <Modal Title="@((CurrentItem as Item)?.Name)" PrimaryButton="ConfirmPurchase" CloseButton="CloseDetails" PrimaryButtonText="Kaufen">
+        <p>Would you like to buys this awesome product?</p>
+    </Modal>
 }
 
-if(ModalOpened)
-{
-    <Modal></Modal>
+@{
+    @if (DetailsModalOpened)
+    {
+        Item item = CurrentItem as Item;
+        <Modal Title="@item?.Name" PrimaryButton="() => {}" CloseButton="CloseDetails">
+            <ChildContent>
+                <p>@item?.Description</p>
+                <p>@item?.Price</p>
+                <select class="form-select" @bind="AmountToPurchase">
+                    <option selected value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                </select>
+            </ChildContent>
+        </Modal>
+    }
 }
+
 
 @code {
-    List<Item> Items { get; set; } = new List<Item>();
+    List<IPDObject> Items { get; set; } = new List<IPDObject>();
 
-    public bool ModalOpened { get; set; } = false;
+    public bool BuyModalOpened { get; set; } = false;
+    public bool DetailsModalOpened { get; set; } = false;
 
-    private void BuyItem()
+    public IPDObject CurrentItem { get; set; }
+    public int AmountToPurchase { get; set; }
+
+    protected override async Task OnInitializedAsync()
     {
-        ModalOpened = true;
+        Items = (await (Repo as Repository).IndexAsync(typeof(Item))).ToList();
+
+        base.OnInitialized();
     }
 
-    private void ShowDetails()
+    private void BuyItem(IPDObject item)
     {
-        ModalOpened = true;
+        BuyModalOpened = true;
+        CurrentItem = item;
+        this.StateHasChanged();
+    }
+
+    private async Task ConfirmPurchase()
+    {
+        string itemsAsJson = await localStorage.GetItemAsync<string>("ItemsToBuy");
+        var list = JsonSerializer.Deserialize<List<Tuple<IPDObject, int>>>(itemsAsJson);
+
+        list.Add(new Tuple<IPDObject, int>(CurrentItem, AmountToPurchase));
+        string newItemsAsJson = JsonSerializer.Serialize(list);
+        await localStorage.SetItemAsync("ItemsToBuy", newItemsAsJson);
+
+        BuyModalOpened = false;
+        this.StateHasChanged();
+    }
+
+    private void ShowDetails(IPDObject item)
+    {
+        DetailsModalOpened = true;
+        CurrentItem = item;
+        this.StateHasChanged();
+    }
+
+    private void CloseDetails()
+    {
+        if (BuyModalOpened)
+            BuyModalOpened = false;
+        else if (DetailsModalOpened)
+            DetailsModalOpened = false;
     }
 }

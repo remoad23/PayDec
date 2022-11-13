@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using PayDec.Shared.Model.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PayDec.Shared.Model
 {
-    public class Purchase
+    public class Purchase : IPDObject
     {
         [Key]
         public long Id { get; set; } = 0;

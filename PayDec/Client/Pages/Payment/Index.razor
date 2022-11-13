@@ -1,17 +1,22 @@
 ﻿@page "/Payment/"
 @using PayDec.Client.Shared.Components
 @using PayDec.Shared.Model
+@using PayDec.Client.Services.Repository.Interfaces
+@using PayDec.Shared.Model.Interfaces
+@using PayDec.Client.Services.Repository
+
+@inject IRepository Repo
 
 <h3>Payment Overview</h3>
 
 <Table SelectedProperties="SelectedPaymentProperties" Data="Purchases"></Table>
 
 @code {
-    private List<object> Purchases { get; set; } = new List<object>();
+    private List<IPDObject> Purchases { get; set; } = new List<IPDObject>();
     private List<string> SelectedPaymentProperties { get; set; } = new List<string>() { "BoughtItemId","BuyerAdress"};
 
     protected override async Task OnInitializedAsync()
     {
-
+        Purchases = (await (Repo as Repository).IndexAsync(typeof(Purchase))).ToList();
     }
 }

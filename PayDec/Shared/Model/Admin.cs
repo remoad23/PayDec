@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PayDec.Shared.Model.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PayDec.Shared.Model
 {
-    public class Admin
+    public class Admin : IPDObject
     {
         [Key]
         public long Id { get; set; } = 0;

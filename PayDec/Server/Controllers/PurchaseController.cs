@@ -9,21 +9,24 @@ namespace PayDec.Server.Controllers
 
         private PayDecContext Context { get; set; }
 
-        PurchaseController(PayDecContext context)
+        public PurchaseController(PayDecContext context)
         {
             this.Context = context;
         }
 
+        [Route("Purchases")]
         public IActionResult Index()
         {
             return Ok(Context.Purchase.ToList());
         }
 
-        public IActionResult Get(int id)
+        [Route("Purchase")]
+        public IActionResult Get([FromBody]int id)
         {
             return Ok(Context.Purchase.First(p => p.Id == id));
         }
 
+        [Route("Purchase/Create")]
         public IActionResult Post(Purchase purchase)
         {
             Context.Purchase.Add(purchase);
@@ -31,6 +34,7 @@ namespace PayDec.Server.Controllers
             return Ok();
         }
 
+        [Route("Purchase/Change")]
         public IActionResult Put(Purchase purchase)
         {
             Context.Update(purchase);
@@ -38,6 +42,7 @@ namespace PayDec.Server.Controllers
             return Ok();
         }
 
+        [Route("Purchase/Delete")]
         public IActionResult Delete(Purchase purchase)
         {
             Context.Purchase.Remove(purchase);

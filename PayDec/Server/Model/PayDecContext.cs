@@ -17,8 +17,8 @@ namespace PayDec.Server.Model
 
         }
 
-        public ICollection<Admin> Admin { get; set; } = new List<Admin>();
-        public ICollection<Item> Item { get; set; } = new List<Item>();
-        public ICollection<Purchase> Purchase { get; set; } = new List<Purchase>();
+        public DbSet<Admin> Admin { get; set; } 
+        public DbSet<Item> Item { get; set; }
+        public DbSet<Purchase> Purchase { get; set; }
     }
 }

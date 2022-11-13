@@ -9,8 +9,7 @@
     <ProjectGuid>{c9fb8443-e4c1-491d-a4ef-9e1e1025143b}</ProjectGuid>
     <DSP>Microsoft.Data.Tools.Schema.Sql.Sql130DatabaseSchemaProvider</DSP>
     <OutputType>Database</OutputType>
-    <RootPath>
-    </RootPath>
+    <RootPath />
     <RootNamespace>PayDec.DB</RootNamespace>
     <AssemblyName>PayDec.DB</AssemblyName>
     <ModelCollation>1033,CI</ModelCollation>
@@ -50,7 +49,6 @@
   </PropertyGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
-    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
     <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
     <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
   </PropertyGroup>
@@ -65,5 +63,8 @@
     <Build Include="dbo\Tables\Admin.sql" />
     <Build Include="dbo\Tables\Purchase.sql" />
     <Build Include="dbo\Tables\Item.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dbo\Seed.sql" />
   </ItemGroup>
 </Project>
