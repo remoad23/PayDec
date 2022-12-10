@@ -3,23 +3,108 @@
 @using PayDec.Client.Shared.Components
 @using PayDec.Shared.Model.Interfaces
 @using System.Text.Json;
+@using PayDec.Client.Services.Repository.Interfaces;
+@using PayDec.Shared.Model;
+@using PayDec.Shared.Model.ViewModel
+@using PayDec.Client.Services.Repository
 
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject IRepository repo
 
+@if(Submited)
+{
+    <h1>Your Order has been submitted. You will get your Items as soon as possible!</h1>
+}
+<Table @ref="table" SelectedProperties="@Properties" Data="@(BoughtItems.Cast<IPDObject>().ToList())"></Table>
 
-<h3>Purchasesubmit</h3>
+@if(BoughtItems.Count() == 0)
+{
+    <h1 style="display:flex;justify-content:center;">No Items selected so far :(</h1>
+}
+else
+{
+    <button class="btn btn-primary LoginBtn" @onclick="() =>SubmitModalOpened = true">Submit Purchase</button>
+}
 
-<Table></Table>
+@if (SubmitModalOpened)
+{
+    <Modal Title="Confirmation" PrimaryButton="SubmitPurchase" CloseButton="CloseDetails" PrimaryButtonText="Buy">
+        <ChildContent>
+            <div style="width:90%;display:flex;flex-align: column;" class="form-group">
+                <label>Cryptoadress</label>
+                <input @bind="Adress" type="text" placeholder="Cryptoadress" />
+            </div>
+        </ChildContent>
+    </Modal>
+}
 
 @code {
-    public List<string> Properties = new List<string>() { "Item", "Amount of Item", "Price" };
+    public List<string> Properties = new List<string>() { "Name", "Amount", "Price", "TotalPrice" };
 
-    public List<IPDObject> BoughtItems { get; set; }
+    public List<PurchasedTableElement> BoughtItems { get; set; } = new();
 
-    protected async Task OnInitailizedAsync()
+    private bool Submited { get; set; } = false;
+
+    private bool SubmitModalOpened { get; set; } = false;
+
+    public string Adress { get; set; } = "";
+
+    Table table { get; set; }
+
+    protected override async Task OnInitializedAsync()
     {
         string itemsAsJson = await localStorage.GetItemAsync<string>("ItemsToBuy");
-        var tuple = JsonSerializer.Deserialize<List<Tuple<IPDObject,int>>>(itemsAsJson);
+        if(itemsAsJson != null)
+        {
+            List<Tuple<Item, int>> deserializedList = JsonSerializer.Deserialize<List<Tuple<Item, int>>>(itemsAsJson) ?? new();
+
+            foreach (Tuple<Item, int> item in deserializedList)
+            {
+                BoughtItems.Add(new PurchasedTableElement()
+                {
+                    Amount = item.Item2,
+                    Name = item.Item1.Name,
+                    Price = item.Item1.Price,
+                    ItemId = item.Item1.Id,
+                });
+            }
+        }
+    }
+
+    public void CloseDetails()
+    {
+        SubmitModalOpened = false;
+    }
+
+    public async Task SubmitPurchase()
+    {
+        Submited = true;
+
+        List<Purchase> purchases = new();
+
+        foreach(var item in BoughtItems)
+        {
+            purchases.Add(new Purchase()
+                {
+                    Amount = item.Amount,
+                    Price = item.Price,
+                    BoughtItemId = item.ItemId,
+                    BuyerAdress = this.Adress
+            });
+        }
+
+        string itemsAsJson = JsonSerializer.Serialize(purchases);
+        await (repo as Repository).PostListAsync(itemsAsJson, typeof(Purchase));
+        await RemoveItems();
+        table.Refresh();
+        SubmitModalOpened = false;
+        this.Adress = "";
+    }
+
+    private async Task RemoveItems()
+    {
+        await localStorage.RemoveItemAsync("ItemsToBuy");
+        BoughtItems.Clear();
     }
 
 }

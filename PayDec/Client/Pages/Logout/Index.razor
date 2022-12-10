@@ -1,0 +1,22 @@
+﻿@page "/Logout/"
+@layout NoAuthLayout
+
+@using PayDec.Client.Services.Authentication
+
+
+
+@code {
+
+    [Inject]
+    AuthenticationStateProvider authState { get; set; }
+
+    [Inject]
+    NavigationManager Manager { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await (authState as PDAuthenticationStateProvider).Logout();
+        Manager.NavigateTo("/Login");
+    }
+
+}

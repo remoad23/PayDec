@@ -1,5 +1,8 @@
 ﻿@inherits LayoutComponentBase
 
+@using PayDec.Client.Services.Authentication
+@using System.Security.Claims
+
 <div class="page">
     <div class="sidebar" style="background-color: #003049 !important;background-image: none;">
         <NavMenu />
@@ -10,3 +13,30 @@
         </article>
     </main>
 </div>
+
+
+@code {
+
+    [Inject]
+    AuthenticationStateProvider AuthProvider { get; set; }
+
+    [Inject]
+    NavigationManager NavigationManager { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+
+        string? authClaim = authState.User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Authentication)?.Value;
+        string? anonymousClaim = authState.User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Anonymous)?.Value;
+
+
+        if (authClaim == "Authenticated" || anonymousClaim == "Anonymous")
+        {
+            NavigationManager.NavigateTo("/");
+        }
+        else{
+            NavigationManager.NavigateTo("/Login");
+        }
+    }
+}

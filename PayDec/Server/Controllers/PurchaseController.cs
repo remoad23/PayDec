@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PayDec.Server.Attributes;
 using PayDec.Server.Model;
 using PayDec.Shared.Model;
+using System.Text.Json;
 
 namespace PayDec.Server.Controllers
 {
@@ -15,26 +17,39 @@ namespace PayDec.Server.Controllers
         }
 
         [Route("Purchases")]
+        [TypeFilter(typeof(JwtAuthorize))]
         public IActionResult Index()
         {
-            return Ok(Context.Purchase.ToList());
+            var purchases = Context.Purchase;
+            return Ok(purchases);
         }
 
         [Route("Purchase")]
-        public IActionResult Get([FromBody]int id)
+        [TypeFilter(typeof(JwtAuthorize))]
+        public IActionResult Get([FromBody] int id)
         {
             return Ok(Context.Purchase.First(p => p.Id == id));
         }
 
         [Route("Purchase/Create")]
-        public IActionResult Post(Purchase purchase)
+        public IActionResult Post([FromBody] List<Purchase> purchase)
         {
-            Context.Purchase.Add(purchase);
+            Context.Purchase.AddRange(purchase);
+            Context.SaveChanges();
+            return Ok();
+        }
+
+        [Route("Purchases/Create")]
+        public IActionResult PostList([FromBody] string serializedList)
+        {
+            var deserializedList = JsonSerializer.Deserialize<List<Purchase>>(serializedList) ?? new List<Purchase>();
+            Context.Purchase.AddRange(deserializedList);
             Context.SaveChanges();
             return Ok();
         }
 
         [Route("Purchase/Change")]
+        [TypeFilter(typeof(JwtAuthorize))]
         public IActionResult Put(Purchase purchase)
         {
             Context.Update(purchase);
@@ -43,6 +58,7 @@ namespace PayDec.Server.Controllers
         }
 
         [Route("Purchase/Delete")]
+        [TypeFilter(typeof(JwtAuthorize))]
         public IActionResult Delete(Purchase purchase)
         {
             Context.Purchase.Remove(purchase);

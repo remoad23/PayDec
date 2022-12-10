@@ -8,11 +8,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Blazored.LocalStorage;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using PayDec.Client.Services.Authentication;
+using Microsoft.AspNetCore.Components.Authorization;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
-builder.Services.AddScoped(sp => new HttpClient { 
+builder.Services.AddSingleton(sp => new HttpClient { 
     BaseAddress = new Uri(builder.Configuration.GetSection("ApiSettings:WebApiUrl").Value) 
 });
 
@@ -29,13 +31,14 @@ builder.Services.AddBlazoredLocalStorage(config =>
     config.JsonSerializerOptions.WriteIndented = false;
 });
 
+builder.Services.AddScoped<AuthenticationStateProvider,PDAuthenticationStateProvider>();
+
+builder.Services.AddAuthorizationCore();
 
 //builder.Services.AddScoped<IRepository, Authenticator>();
 
 //await GetAccountBalance();
 //Console.ReadLine(); 
-
-builder.Services.AddApiAuthorization();
 
 await builder.Build().RunAsync();
 

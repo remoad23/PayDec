@@ -36,6 +36,11 @@ namespace PayDec.Client.Services.Repository
             return true;
         }
 
+        public async Task PostListAsync(string serializedObj,Type type)
+        {
+            var result = await Client.PostAsJsonAsync($"/{type.Name}s/Create", serializedObj);
+        }
+
         public async Task<bool> PutAsync(IPDObject obj)
         {
             var result = await Client.PutAsJsonAsync($"/{obj.GetType().Name}/Change",obj);

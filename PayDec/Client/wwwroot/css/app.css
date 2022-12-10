@@ -65,11 +65,31 @@ a, .btn-link {
     }
 
 
-.purchaseBtn{
+.purchaseBtn {
     transition-duration: 0.3s;
 }
 
-.purchaseBtn:hover {
-    background-color: grey !important;
+    .purchaseBtn:hover {
+        background-color: #0b5ed7 !important;
+        cursor: pointer;
+    }
+
+.skipLoginBtn
+{
+    transition: color 0.3s;
+}
+
+.LoginBtn
+{
+    transition: background-color 0.3s,color 0.3s;
+}
+
+.LoginBtn {
+    background-color: #003049;
+    color: white;
+}
+
+.skipLoginBtn:hover {
     cursor: pointer;
+    color: #1b6ec2;
 }

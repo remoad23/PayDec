@@ -13,6 +13,18 @@ namespace PayDec.Shared.Model
         public long BoughtItemId { get; set; } = 0;
         [Required]
         public string BuyerAdress { get; set; } = "";
+
+        public int Amount { get; set; }
+
+        public int Price { get; set; }
+        [NotMapped]
+        public int TotalPrice
+        {
+            get
+            {
+                return Amount * Price;     
+            }
+        }
         public Item? BoughtItem { get; set; } = null;
     }
 }

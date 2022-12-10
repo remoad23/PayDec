@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PayDec.Server.Attributes;
 using PayDec.Server.Model;
 using PayDec.Shared.Model;
 
@@ -26,6 +27,7 @@ namespace PayDec.Server.Controllers
             return Ok(Context.Item.First(p => p.Id == id));
         }
 
+        [TypeFilter(typeof(JwtAuthorize))]
         [Route("Item/Create")]
         public IActionResult Post(Item item)
         {
@@ -34,6 +36,7 @@ namespace PayDec.Server.Controllers
             return Ok();
         }
 
+        [TypeFilter(typeof(JwtAuthorize))]
         [Route("Item/Change")]
         public IActionResult Put(Item item)
         {
@@ -42,6 +45,7 @@ namespace PayDec.Server.Controllers
             return Ok();
         }
 
+        [TypeFilter(typeof(JwtAuthorize))]
         [Route("Item/Delete")]
         public IActionResult Delete(Item item)
         {

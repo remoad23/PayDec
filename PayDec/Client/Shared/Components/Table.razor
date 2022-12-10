@@ -2,7 +2,7 @@
 @using PayDec.Shared.Model.Interfaces
 
 <table class="table table-hover">
-    <thead>
+    <thead class="table-dark">
         <tr>
             @foreach (var property in SelectedProperties)
             {
@@ -28,4 +28,9 @@
     public List<string> SelectedProperties { get; set; } = new();
     [Parameter]
     public List<IPDObject> Data { get; set; } = new();
+
+    public void Refresh()
+    {
+        this.StateHasChanged();
+    }
 }

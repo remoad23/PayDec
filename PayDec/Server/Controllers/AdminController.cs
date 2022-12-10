@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PayDec.Server.Attributes;
 using PayDec.Server.Model;
 using PayDec.Shared.Model;
 
@@ -14,6 +15,7 @@ namespace PayDec.Server.Controllers
         }
 
         [Route("Internal/Admin")]
+        [TypeFilter(typeof(JwtAuthorize))]
         public IActionResult Get(int id)
         {
             return Ok(Context.Item.First(p => p.Id == id));

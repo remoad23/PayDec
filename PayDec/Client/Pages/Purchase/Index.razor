@@ -45,48 +45,47 @@
 
 @if (BuyModalOpened)
 {
-    <Modal Title="@((CurrentItem as Item)?.Name)" PrimaryButton="ConfirmPurchase" CloseButton="CloseDetails" PrimaryButtonText="Kaufen">
-        <p>Would you like to buys this awesome product?</p>
+    <Modal Title="@((CurrentItem as Item)?.Name)" PrimaryButton="ConfirmPurchase" CloseButton="CloseDetails" PrimaryButtonText="Buy">
+        <ChildContent>
+            <p>Choose amount the amount to buy</p>
+            <select class="form-select" @bind="AmountToPurchase">
+                <option value="1" selected>1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+            </select>
+        </ChildContent>
     </Modal>
 }
 
 @{
     @if (DetailsModalOpened)
     {
-        Item item = CurrentItem as Item;
+        Item? item = CurrentItem as Item;
         <Modal Title="@item?.Name" PrimaryButton="() => {}" CloseButton="CloseDetails">
-            <ChildContent>
-                <p>@item?.Description</p>
-                <p>@item?.Price</p>
-                <select class="form-select" @bind="AmountToPurchase">
-                    <option selected value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                </select>
-            </ChildContent>
+            @(item?.Description ?? "")
         </Modal>
     }
 }
 
 
 @code {
-    List<IPDObject> Items { get; set; } = new List<IPDObject>();
+    List<Item> Items { get; set; } = new List<Item>();
 
     public bool BuyModalOpened { get; set; } = false;
     public bool DetailsModalOpened { get; set; } = false;
 
-    public IPDObject CurrentItem { get; set; }
-    public int AmountToPurchase { get; set; }
+    public Item CurrentItem { get; set; }
+    public int AmountToPurchase { get; set; } = 1;
 
     protected override async Task OnInitializedAsync()
     {
-        Items = (await (Repo as Repository).IndexAsync(typeof(Item))).ToList();
+        Items = (await (Repo as Repository).IndexAsync(typeof(Item))).Cast<Item>().ToList();
 
         base.OnInitialized();
     }
@@ -94,19 +93,28 @@
     private void BuyItem(IPDObject item)
     {
         BuyModalOpened = true;
-        CurrentItem = item;
+        CurrentItem = item as Item;
         this.StateHasChanged();
     }
 
     private async Task ConfirmPurchase()
     {
         string itemsAsJson = await localStorage.GetItemAsync<string>("ItemsToBuy");
-        var list = JsonSerializer.Deserialize<List<Tuple<IPDObject, int>>>(itemsAsJson);
+        var list = new List<Tuple<Item, int>>();
 
-        list.Add(new Tuple<IPDObject, int>(CurrentItem, AmountToPurchase));
-        string newItemsAsJson = JsonSerializer.Serialize(list);
-        await localStorage.SetItemAsync("ItemsToBuy", newItemsAsJson);
-
+        if(itemsAsJson == null)
+        {
+            list.Add(new Tuple<Item, int>(CurrentItem, AmountToPurchase));
+            string newItemsAsJson = JsonSerializer.Serialize(list);
+            await localStorage.SetItemAsync<string>("ItemsToBuy", newItemsAsJson);
+        }
+        else{
+            list = JsonSerializer.Deserialize<List<Tuple<Item, int>>>(itemsAsJson);
+            list.Add(new Tuple<Item, int>(CurrentItem, AmountToPurchase));
+            string newItemsAsJson = JsonSerializer.Serialize(list);
+            await localStorage.SetItemAsync("ItemsToBuy", newItemsAsJson);
+        }
+        AmountToPurchase = 1;
         BuyModalOpened = false;
         this.StateHasChanged();
     }
@@ -114,7 +122,7 @@
     private void ShowDetails(IPDObject item)
     {
         DetailsModalOpened = true;
-        CurrentItem = item;
+        CurrentItem = item as Item;
         this.StateHasChanged();
     }
 
@@ -124,5 +132,7 @@
             BuyModalOpened = false;
         else if (DetailsModalOpened)
             DetailsModalOpened = false;
+
+        AmountToPurchase = 1;
     }
 }

@@ -10,6 +10,8 @@ namespace PayDec.Client.Services.Repository.Interfaces
 
         public virtual Task PostAsync(IPDObject obj) => throw new NotImplementedException();
 
+        public virtual async Task PostListAsync(List<IPDObject> obj) => throw new NotImplementedException();
+
         public virtual Task PutAsync(IPDObject obj) => throw new NotImplementedException();
 
         public virtual Task DeleteAsync(IPDObject obj) => throw new NotImplementedException();
