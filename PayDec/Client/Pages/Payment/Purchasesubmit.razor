@@ -7,14 +7,20 @@
 @using PayDec.Shared.Model;
 @using PayDec.Shared.Model.ViewModel
 @using PayDec.Client.Services.Repository
+@using MetaMask.Blazor
+@using Nethereum.ABI.Model
+@using Nethereum.Web3
+@using System.Numerics;
+@using Nethereum.ABI.FunctionEncoding;
+@using Nethereum.ABI.Model;
 
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject IRepository repo
 
-@if(Submited)
+@*@if(Submited)
 {
     <h1>Your Order has been submitted. You will get your Items as soon as possible!</h1>
-}
+}*@
 <Table @ref="table" SelectedProperties="@Properties" Data="@(BoughtItems.Cast<IPDObject>().ToList())"></Table>
 
 @if(BoughtItems.Count() == 0)
@@ -31,8 +37,7 @@ else
     <Modal Title="Confirmation" PrimaryButton="SubmitPurchase" CloseButton="CloseDetails" PrimaryButtonText="Buy">
         <ChildContent>
             <div style="width:90%;display:flex;flex-align: column;" class="form-group">
-                <label>Cryptoadress</label>
-                <input @bind="Adress" type="text" placeholder="Cryptoadress" />
+                <label>Press Confirm to confirm your Purchase with MetaMask</label>
             </div>
         </ChildContent>
     </Modal>
@@ -50,6 +55,10 @@ else
     public string Adress { get; set; } = "";
 
     Table table { get; set; }
+
+    [Inject]
+    public IMetaMaskService MetaMaskService { get; set; } = default!;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -69,6 +78,24 @@ else
                 });
             }
         }
+
+        bool hasMetaMask = false;
+        bool isSiteConnected = false;
+
+        try{
+            hasMetaMask = await this.MetaMaskService.HasMetaMask();
+            isSiteConnected = await this.MetaMaskService.IsSiteConnected();
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine(e);
+        }
+
+        if(hasMetaMask)
+        {
+            await this.MetaMaskService.ConnectMetaMask();
+        }
+
     }
 
     public void CloseDetails()
@@ -94,17 +121,78 @@ else
         }
 
         string itemsAsJson = JsonSerializer.Serialize(purchases);
-        await (repo as Repository).PostListAsync(itemsAsJson, typeof(Purchase));
-        await RemoveItems();
-        table.Refresh();
-        SubmitModalOpened = false;
-        this.Adress = "";
+        int totalPayment = 0;
+
+        foreach (Purchase purchase in purchases)
+        {
+            totalPayment += purchase.TotalPrice;
+        }
+
+        Console.WriteLine(totalPayment);
+
+        try
+        {
+
+            var currentAdress = await MetaMaskService.GetSelectedAddress();
+            foreach (Purchase purchase in purchases)
+            {
+                purchase.BuyerAdress = currentAdress;
+                totalPayment += purchase.TotalPrice;
+            }
+
+            SendPayment(totalPayment);
+            await (repo as Repository).Pay(itemsAsJson);
+            await RemoveItems();
+            table.Refresh();
+            SubmitModalOpened = false;
+            this.Adress = "";
+        }
+        catch (Exception e)
+        {
+
+        }
+       
     }
 
     private async Task RemoveItems()
     {
         await localStorage.RemoveItemAsync("ItemsToBuy");
         BoughtItems.Clear();
+    }
+
+    private async void SendPayment(int amount)
+    {
+        var web3 = new Web3("https://goerli.infura.io/v3/e126aa853d8248adb96b087e545275f3");
+        var contractAddress = "0x424126ee7ed5155c38785b2f35ef7fab295a9c85";
+        var funcName = "purchase";
+        var currentBuyerAdress = Adress;
+
+
+        string data = GetEncodedFunctionCall(funcName);
+        data = data[2..];
+        var receipt = await MetaMaskService.SendTransaction(
+            contractAddress,
+            BigInteger.Parse(amount.ToString()),
+            data);
+
+
+        Console.WriteLine("TXN Hash: " + receipt.ToString());
+    }
+
+
+    private string GetEncodedFunctionCall(string functionName)
+    {
+
+        FunctionABI function = new FunctionABI(functionName, false);
+
+        //Parameter[] inputsParameters = new Parameter[1];
+
+        //function.InputParameters = inputsParameters;
+
+        var functionCallEncoder = new FunctionCallEncoder();
+
+        var data = functionCallEncoder.EncodeRequest(function.Sha3Signature);
+        return data;
     }
 
 }

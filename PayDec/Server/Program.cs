@@ -35,6 +35,8 @@ builder.Services.AddTransient<IJwtMaker,JwtMaker>();
 builder.Services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddAuthentication(IISDefaults.AuthenticationScheme);
 
+builder.Services.AddTransient<IBlockchainTransaction, BlockchainTransaction>();
+
 var app = builder.Build();
 
 

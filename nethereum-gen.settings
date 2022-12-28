@@ -1,0 +1,7 @@
+{
+    "projectName": "PayDec",
+    "namespace": "PayDec.Contracts",
+    "lang": 0,
+    "autoCodeGen": true,
+    "projectPath": "../"
+}

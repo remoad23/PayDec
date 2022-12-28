@@ -1,0 +1,15 @@
+﻿{
+  "User": {
+    "Adress": "0x3Bf985949Ca2f3cD55a76e10f4FE36151BE7a824",
+    "Password": "Retro1992@"
+  },
+  "Contract": {
+    "Adress": "",
+    "ByteCode": "",
+    "Abi": ""
+  },
+  "NodeSettings": {
+    "InfuraUrl": "https://goerli.infura.io/v3/e126aa853d8248adb96b087e545275f3",
+    "MetaPrivateKey": "391fbc3f6809836e04f7d4210879733f57b3ebef17407429386f7cdf8d55dbc5"
+  }
+}

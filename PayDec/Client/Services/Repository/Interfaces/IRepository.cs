@@ -1,4 +1,5 @@
 ﻿using PayDec.Shared.Model.Interfaces;
+using System.Numerics;
 
 namespace PayDec.Client.Services.Repository.Interfaces
 {
@@ -16,5 +17,8 @@ namespace PayDec.Client.Services.Repository.Interfaces
 
         public virtual Task DeleteAsync(IPDObject obj) => throw new NotImplementedException();
 
+        public virtual async Task Pay(string serializedObj) => throw new NotImplementedException();
+
+        public virtual async Task<string> GetBalance(string contractAdress) => throw new NotImplementedException();
     }
 }

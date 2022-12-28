@@ -1,6 +1,7 @@
 ﻿using PayDec.Client.Services.Repository.Interfaces;
 using PayDec.Shared.Model.Interfaces;
 using System.Net.Http.Json;
+using System.Numerics;
 
 namespace PayDec.Client.Services.Repository
 {
@@ -41,6 +42,17 @@ namespace PayDec.Client.Services.Repository
             var result = await Client.PostAsJsonAsync($"/{type.Name}s/Create", serializedObj);
         }
 
+        public async Task Pay(string serializedObj)
+        {
+            var result = await Client.PostAsJsonAsync($"/Pay", serializedObj);
+        }
+
+        public async Task<long> GetBalance(string contractAdress)
+        {
+            var result = await Client.GetFromJsonAsync<long>($"/GetBalance?contractAdress={contractAdress}");
+            return result;
+        }
+
         public async Task<bool> PutAsync(IPDObject obj)
         {
             var result = await Client.PutAsJsonAsync($"/{obj.GetType().Name}/Change",obj);
@@ -53,5 +65,7 @@ namespace PayDec.Client.Services.Repository
             var result = Client.DeleteAsync($"/{obj.GetType().Name}/Delete");
             return true;
         }
+
+
     }
 }
